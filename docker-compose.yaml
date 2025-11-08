@@ -12,7 +12,7 @@ services:
       POSTGRES_PASSWORD: networking_password
       POSTGRES_DB: networking_db
     ports:
-      - '5432:5432' # Mapeia a porta do container para a sua máquina
+      - '5433:5432' # Mapeia a porta do container para a sua máquina
     volumes:
       - postgres_data:/var/lib/postgresql/data # Volume para persistir os dados
 
