@@ -1,14 +1,15 @@
 // api/src/candidaturas/candidaturas.controller.ts
 
-import { 
-  Controller, 
-  Post, 
-  Get, 
-  Body, 
-  HttpCode, 
-  HttpStatus, 
-  UsePipes, 
-  ValidationPipe 
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UsePipes,
+  ValidationPipe,
+  Param,
 } from '@nestjs/common';
 import { CandidaturasService } from './candidaturas.service';
 import { CriarCandidaturaDto } from './dto/criar-candidatura.dto'; // Importa DTO
@@ -21,14 +22,11 @@ export class CandidaturasController {
 
   // 1. Rota Pública: POST /candidaturas (Submissão)
   @Post('candidaturas')
-  @HttpCode(HttpStatus.CREATED) 
+  @HttpCode(HttpStatus.CREATED)
   async criar(
     @Body() criarCandidaturaDto: CriarCandidaturaDto, // Usando o DTO
   ): Promise<Candidatura> {
-    
-    return this.candidaturasService.criarCandidatura(
-      criarCandidaturaDto,
-    );
+    return this.candidaturasService.criarCandidatura(criarCandidaturaDto);
   }
 
   // 2. Rota Protegida (Admin): GET /admin/candidaturas (Listagem)
@@ -39,4 +37,11 @@ export class CandidaturasController {
   }
 
   // TODO: Adicionar rotas POST /admin/candidaturas/:id/aprovar e /recusar
+
+  // NOVO: 3. Rota Protegida (Admin): POST /admin/candidaturas/:id/aprovar
+  @Post('admin/candidaturas/:id/aprovar')
+  async aprovarCandidatura(@Param('id') id: string) {
+    // Note: Usamos @Param('id') para extrair o ID da URL
+    return this.candidaturasService.aprovarCandidatura(Number(id));
+  }
 }
