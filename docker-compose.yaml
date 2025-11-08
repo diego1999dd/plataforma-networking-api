@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  # Serviço do PostgreSQL
+  postgres_db:
+    image: postgres:16-alpine # Versão estável e leve
+    container_name: plataforma_db
+    restart: always
+    environment:
+      # Essas variáveis devem bater com o seu arquivo .env (Passo 2)
+      POSTGRES_USER: networking_user
+      POSTGRES_PASSWORD: networking_password
+      POSTGRES_DB: networking_db
+    ports:
+      - '5432:5432' # Mapeia a porta do container para a sua máquina
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Volume para persistir os dados
+
+volumes:
+  postgres_data:
