@@ -3,9 +3,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config'; // Necessário para .env
-import { ApplicationsModule } from './applications/applications.module';
-import { InvitationsModule } from './invitations/invitations.module';
-import { MembersModule } from './members/members.module';
 import { CandidaturasModule } from './candidaturas/candidaturas.module';
 import { ConvitesModule } from './convites/convites.module';
 import { MembrosModule } from './membros/membros.module';
@@ -25,9 +22,6 @@ import { MembrosModule } from './membros/membros.module';
       ],
       synchronize: true, // APENAS PARA DESENVOLVIMENTO
     }),
-    ApplicationsModule,
-    InvitationsModule,
-    MembersModule,
     CandidaturasModule,
     ConvitesModule,
     MembrosModule,

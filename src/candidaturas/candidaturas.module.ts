@@ -1,15 +1,12 @@
-// api/src/candidaturas/candidaturas.module.ts
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CandidaturasService } from './candidaturas.service';
 import { CandidaturasController } from './candidaturas.controller';
-// Mude o caminho de importação:
-import { Application } from '../entidades/application.entity'; 
+import { Candidatura } from '../entidades/candidatura.entidade'; // <-- CORRIGIDO!
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Application]), 
+    TypeOrmModule.forFeature([Candidatura]), // <-- CORRIGIDO!
   ],
   controllers: [CandidaturasController],
   providers: [CandidaturasService],
