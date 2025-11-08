@@ -1,15 +1,14 @@
-// api/src/app.module.ts
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config'; // Necessário para .env
+import { ConfigModule } from '@nestjs/config';
 import { CandidaturasModule } from './candidaturas/candidaturas.module';
 import { ConvitesModule } from './convites/convites.module';
 import { MembrosModule } from './membros/membros.module';
+import { Candidatura } from './entidades/candidatura.entidade';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), // Carrega o .env
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST || 'localhost',
@@ -17,11 +16,10 @@ import { MembrosModule } from './membros/membros.module';
       username: process.env.DB_USERNAME || 'postgres',
       password: process.env.DB_PASSWORD || 'sua_senha',
       database: process.env.DB_DATABASE || 'networking_db',
-      entities: [
-        // Importar suas entidades aqui: Application, Invitation, Member...
-      ],
-      synchronize: true, // APENAS PARA DESENVOLVIMENTO
+      entities: [Candidatura],
+      synchronize: true,
     }),
+
     CandidaturasModule,
     ConvitesModule,
     MembrosModule,
