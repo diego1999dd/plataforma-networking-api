@@ -5,9 +5,11 @@ import { Module } from '@nestjs/common';
 import { ConvitesController } from './convites.controller';
 import { ConvitesService } from './convites.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MembrosModule } from 'src/membros/membros.module';
 
 @Module({
   imports: [
+    MembrosModule,
     // 2. Use TypeOrmModule.forFeature() para registrar as entidades
     TypeOrmModule.forFeature([
       Convite,
