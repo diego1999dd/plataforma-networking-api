@@ -176,4 +176,58 @@ describe('CandidaturasService', () => {
       expect(repositorio.save).not.toHaveBeenCalled();
     });
   });
+
+  // --- 4. Testes de Recusa (POST /admin/:id/recusar) ---
+  // --------------------------------------------------------
+  describe('recusarCandidatura', () => {
+    const id = 2;
+    const candidaturaPendente = {
+      id,
+      status: StatusCandidatura.PENDING,
+      nome: 'Candidato',
+      email: 'b@b.com',
+    } as Candidatura;
+
+    it('deve recusar e salvar o status REJECTED se for PENDENTE', async () => {
+      repositorio.findOneBy.mockResolvedValue(candidaturaPendente);
+      const candidaturaRecusada = {
+        ...candidaturaPendente,
+        status: StatusCandidatura.REJECTED,
+      } as Candidatura;
+      repositorio.save.mockResolvedValue(candidaturaRecusada);
+
+      const result = await service.recusarCandidatura(id);
+
+      // Verifica se o status foi alterado e salvo
+      expect(repositorio.save).toHaveBeenCalledWith(
+        expect.objectContaining({ status: StatusCandidatura.REJECTED }),
+      );
+      expect(result.status).toEqual(StatusCandidatura.REJECTED);
+      // Verifica que o serviço de convites NÃO foi chamado (correto para recusa)
+      expect(convitesService.gerarConvite).not.toHaveBeenCalled();
+    });
+
+    it('deve lançar NotFoundException se a candidatura não for encontrada', async () => {
+      repositorio.findOneBy.mockResolvedValue(null);
+
+      await expect(service.recusarCandidatura(id)).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(repositorio.save).not.toHaveBeenCalled();
+    });
+
+    it('deve lançar BadRequestException se o status não for PENDENTE', async () => {
+      const candidaturaAprovada = {
+        ...candidaturaPendente,
+        status: StatusCandidatura.APPROVED,
+      } as Candidatura;
+
+      repositorio.findOneBy.mockResolvedValue(candidaturaAprovada); // Simula status APROVADA
+
+      await expect(service.recusarCandidatura(id)).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(repositorio.save).not.toHaveBeenCalled();
+    });
+  });
 });

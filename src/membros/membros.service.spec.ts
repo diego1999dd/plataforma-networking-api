@@ -1,10 +1,20 @@
+// api/src/membros/membros.service.spec.ts
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { MembrosService } from './membros.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Membro } from '../entidades/membro.entidade';
+import { CriarMembroData } from '../membros/membros.service'; // Importa a interface do Service
 
-describe('MembrosService', () => {
+// --- MOCKS ---
+const mockRepositorioMembro = {
+  create: jest.fn(),
+  save: jest.fn(),
+};
+
+describe('MembrosService (Unitário)', () => {
   let service: MembrosService;
+  let repositorio: typeof mockRepositorioMembro;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -12,18 +22,54 @@ describe('MembrosService', () => {
         MembrosService,
         {
           provide: getRepositoryToken(Membro),
-          useValue: {
-            // Adicione mocks para as funções do repositório que você usa
-            // Ex: findOne: jest.fn(), create: jest.fn(), save: jest.fn()
-          },
+          useValue: mockRepositorioMembro,
         },
       ],
     }).compile();
 
     service = module.get<MembrosService>(MembrosService);
+    repositorio = module.get(getRepositoryToken(Membro));
+    jest.clearAllMocks();
   });
 
-  it('should be defined', () => {
+  it('deve estar definido', () => {
     expect(service).toBeDefined();
+  });
+
+  // --------------------------------------------------------
+  // --- Testes de Criação de Membro ---
+  // --------------------------------------------------------
+  describe('criarMembro', () => {
+    const dadosMembro: CriarMembroData = {
+      nome: 'Membro Teste',
+      email: 'membro@ativo.com',
+      empresa: 'Nova Empresa',
+      telefone: '11900001111',
+      funcao: 'Diretor',
+      bio: 'Bio de teste',
+    };
+    const membroCriado: Membro = {
+      ...dadosMembro,
+      id: 100,
+      ativo: true,
+      dataAdesao: new Date(),
+    } as Membro;
+
+    it('deve chamar create e save no repositório com os dados corretos', async () => {
+      repositorio.create.mockReturnValue(membroCriado);
+      repositorio.save.mockResolvedValue(membroCriado);
+
+      const result = await service.criarMembro(dadosMembro);
+
+      // Verifica se o repositório.create foi chamado
+      expect(repositorio.create).toHaveBeenCalledWith(dadosMembro);
+
+      // Verifica se o repositório.save foi chamado
+      expect(repositorio.save).toHaveBeenCalledWith(membroCriado);
+
+      // Verifica o retorno
+      expect(result).toEqual(membroCriado);
+      expect(result.ativo).toBe(true); // Confirma a regra de negócio (ativo=true por padrão)
+    });
   });
 });
