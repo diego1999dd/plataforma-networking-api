@@ -49,4 +49,10 @@ export class CandidaturasController {
     // Note: Usamos @Param('id') para extrair o ID da URL
     return this.candidaturasService.aprovarCandidatura(Number(id));
   }
+
+  @UseGuards(ApiKeyGuard)
+  @Post('admin/candidaturas/:id/recusar')
+  async recusarCandidatura(@Param('id') id: string): Promise<Candidatura> {
+    return this.candidaturasService.recusarCandidatura(Number(id));
+  }
 }

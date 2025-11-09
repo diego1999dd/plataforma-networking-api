@@ -19,6 +19,9 @@ export class Membro {
   @Column({ length: 150, nullable: true })
   empresa: string;
 
+  @Column({ length: 100, nullable: true })
+  funcao: string; // Adicionando a coluna que faltava
+
   @Column({ length: 50, nullable: true })
   telefone: string;
 

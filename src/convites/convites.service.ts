@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid'; // Importa a função de geração de UUID
+import * as uuid from 'uuid'; // Importa a função de geração de UUID
 import { Convite } from '../entidades/convite.entidade';
 import {
   Candidatura,
@@ -30,7 +30,7 @@ export class ConvitesService {
 
   async gerarConvite(candidaturaId: number): Promise<Convite> {
     // 1. Gera o token único
-    const tokenUnico = uuidv4();
+    const tokenUnico = uuid.v4();
 
     // 2. Cria o objeto Convite
     const novoConvite = this.repositorioConvite.create({

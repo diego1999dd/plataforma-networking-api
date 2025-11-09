@@ -79,5 +79,27 @@ export class CandidaturasService {
     return { candidatura, convite: novoConvite };
   }
 
-  // TODO: Implementar recusarCandidatura...
+  // NOVO MÉTODO: Recusa de Candidatura
+  async recusarCandidatura(id: number): Promise<Candidatura> {
+    const candidatura = await this.repositorioCandidatura.findOneBy({ id });
+
+    if (!candidatura) {
+      throw new NotFoundException(`Candidatura com ID ${id} não encontrada.`);
+    }
+
+    if (candidatura.status !== StatusCandidatura.PENDING) {
+      // Impede que se recuse uma candidatura já aprovada ou recusada
+      throw new BadRequestException(
+        `A candidatura já foi processada com status ${candidatura.status}.`,
+      );
+    }
+
+    // 1. Atualiza o status
+    candidatura.status = StatusCandidatura.REJECTED;
+    await this.repositorioCandidatura.save(candidatura);
+
+    this.logger.log(`[EVENTO] Candidatura com ID ${id} recusada.`);
+
+    return candidatura;
+  }
 }
