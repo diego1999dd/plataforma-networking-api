@@ -7,6 +7,7 @@ import { MembrosModule } from './membros/membros.module';
 import { Candidatura } from './entidades/candidatura.entidade';
 import { Membro } from './entidades/membro.entidade';
 import { Convite } from './entidades/convite.entidade';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { Convite } from './entidades/convite.entidade';
     CandidaturasModule,
     ConvitesModule,
     MembrosModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
