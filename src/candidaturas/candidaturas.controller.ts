@@ -20,7 +20,7 @@ import { ApiKeyGuard } from '../auth/api-key/api-key.guard';
 export class CandidaturasController {
   constructor(private readonly candidaturasService: CandidaturasService) {}
 
-  @UseGuards(ApiKeyGuard)
+  //@UseGuards(ApiKeyGuard)
   @Post('candidaturas')
   @HttpCode(HttpStatus.CREATED)
   async criar(
@@ -37,7 +37,6 @@ export class CandidaturasController {
 
   @Post('admin/candidaturas/:id/aprovar')
   async aprovarCandidatura(@Param('id') id: string) {
-    // Note: Usamos @Param('id') para extrair o ID da URL
     return this.candidaturasService.aprovarCandidatura(Number(id));
   }
 
