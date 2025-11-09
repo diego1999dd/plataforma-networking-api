@@ -24,7 +24,7 @@ export class CandidaturasController {
   constructor(private readonly candidaturasService: CandidaturasService) {}
 
   // 1. Rota Pública: POST /candidaturas (Submissão)
-  @UseGuards(ApiKeyGuard)
+  // @UseGuards(ApiKeyGuard)
   @Post('candidaturas')
   @HttpCode(HttpStatus.CREATED)
   async criar(
