@@ -1,5 +1,3 @@
-// api/src/convites/convites.controller.spec.ts
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConvitesController } from './convites.controller';
 import { ConvitesService } from './convites.service';
@@ -7,12 +5,10 @@ import { Membro } from '../entidades/membro.entidade';
 import { Convite } from '../entidades/convite.entidade';
 import { CompletarCadastroDto } from '../candidaturas/dto/completar-cadastro.dto';
 
-// Mock do UUID
 jest.mock('uuid', () => ({
   v4: () => 'some-mock-uuid',
 }));
 
-// Mock do serviço ConvitesService
 const mockConvitesService = {
   validarConvite: jest.fn(),
   completarCadastro: jest.fn(),
@@ -42,9 +38,6 @@ describe('ConvitesController', () => {
     expect(controller).toBeDefined();
   });
 
-  // --------------------------------------------------------
-  // --- Testes de Rotas Públicas (Convites) ---
-  // --------------------------------------------------------
   describe('Rotas de Convite', () => {
     const token = 'token-valido-mockado';
     const mockConvite: Convite = { token } as Convite;
@@ -70,7 +63,6 @@ describe('ConvitesController', () => {
 
       expect(service.completarCadastro).toHaveBeenCalledWith(token, mockDto);
       expect(result).toEqual(mockMembro);
-      // O status 201 Created é validado pelo @HttpCode no Controller
     });
   });
 });

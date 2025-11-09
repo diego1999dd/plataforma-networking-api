@@ -1,5 +1,3 @@
-// api/src/candidaturas/candidaturas.controller.ts
-
 import {
   Controller,
   Post,
@@ -13,37 +11,30 @@ import {
   Param,
 } from '@nestjs/common';
 import { CandidaturasService } from './candidaturas.service';
-import { CriarCandidaturaDto } from './dto/criar-candidatura.dto'; // Importa DTO
-import { Candidatura } from '../entidades/candidatura.entidade'; // Importa Entidade
+import { CriarCandidaturaDto } from './dto/criar-candidatura.dto';
+import { Candidatura } from '../entidades/candidatura.entidade';
 import { ApiKeyGuard } from '../auth/api-key/api-key.guard';
-// Importa o guard de API Key
 
-@Controller() // Deixamos o prefixo de rota opcional para usar rotas mais complexas
-@UsePipes(new ValidationPipe()) // Garante que o DTO seja validado aqui
+@Controller()
+@UsePipes(new ValidationPipe())
 export class CandidaturasController {
   constructor(private readonly candidaturasService: CandidaturasService) {}
 
-  // 1. Rota Pública: POST /candidaturas (Submissão)
   @UseGuards(ApiKeyGuard)
   @Post('candidaturas')
   @HttpCode(HttpStatus.CREATED)
   async criar(
-    @Body() criarCandidaturaDto: CriarCandidaturaDto, // Usando o DTO
+    @Body() criarCandidaturaDto: CriarCandidaturaDto,
   ): Promise<Candidatura> {
     return this.candidaturasService.criarCandidatura(criarCandidaturaDto);
   }
 
-  // 2. Rota Protegida (Admin): GET /admin/candidaturas (Listagem)
-  // Nota: A proteção (Authentication Guard) será adicionada na próxima etapa.
   @UseGuards(ApiKeyGuard)
   @Get('admin/candidaturas')
   async listarTodas(): Promise<Candidatura[]> {
     return this.candidaturasService.listarTodas();
   }
 
-  // TODO: Adicionar rotas POST /admin/candidaturas/:id/aprovar e /recusar
-
-  // NOVO: 3. Rota Protegida (Admin): POST /admin/candidaturas/:id/aprovar
   @Post('admin/candidaturas/:id/aprovar')
   async aprovarCandidatura(@Param('id') id: string) {
     // Note: Usamos @Param('id') para extrair o ID da URL

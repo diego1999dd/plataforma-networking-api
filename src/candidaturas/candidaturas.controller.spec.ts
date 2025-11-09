@@ -1,5 +1,3 @@
-// api/src/candidaturas/candidaturas.controller.spec.ts
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { CandidaturasController } from './candidaturas.controller';
 import { CandidaturasService } from './candidaturas.service';
@@ -9,14 +7,12 @@ import {
   StatusCandidatura,
 } from '../entidades/candidatura.entidade';
 import { ApiKeyGuard } from '../auth/api-key/api-key.guard';
-import { of } from 'rxjs'; // Para simular Guards
+import { of } from 'rxjs';
 
-// Mock do UUID
 jest.mock('uuid', () => ({
   v4: () => 'some-mock-uuid',
 }));
 
-// Mock da Entidade/DTO
 const mockCandidatura: Candidatura = {
   id: 1,
   nome: 'Teste Mock',
@@ -27,7 +23,6 @@ const mockCandidatura: Candidatura = {
   dataCriacao: new Date(),
 } as Candidatura;
 
-// Mock do Serviço CandidaturasService
 const mockCandidaturasService = {
   criarCandidatura: jest.fn(() => Promise.resolve(mockCandidatura)),
   listarTodas: jest.fn(() => Promise.resolve([mockCandidatura])),
@@ -42,9 +37,8 @@ const mockCandidaturasService = {
   ),
 };
 
-// Mock do Guard para controle
 const mockApiKeyGuard = {
-  canActivate: jest.fn(() => true), // Por padrão, permite o acesso
+  canActivate: jest.fn(() => true),
 };
 
 describe('CandidaturasController (Unitário)', () => {
@@ -52,7 +46,7 @@ describe('CandidaturasController (Unitário)', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot()], // Necessário para o ApiKeyGuard funcionar
+      imports: [ConfigModule.forRoot()],
       controllers: [CandidaturasController],
       providers: [
         {
@@ -61,21 +55,18 @@ describe('CandidaturasController (Unitário)', () => {
         },
       ],
     })
-      .overrideGuard(ApiKeyGuard) // Substitui o Guard real pelo mock
+      .overrideGuard(ApiKeyGuard)
       .useValue(mockApiKeyGuard)
       .compile();
 
     controller = module.get<CandidaturasController>(CandidaturasController);
-    jest.clearAllMocks(); // Limpa as chamadas antes de cada teste
+    jest.clearAllMocks();
   });
 
   it('deve estar definido', () => {
     expect(controller).toBeDefined();
   });
 
-  // --------------------------------------------------------
-  // --- Testes de Rota Pública (POST /candidaturas) ---
-  // --------------------------------------------------------
   describe('POST /candidaturas (Criação)', () => {
     it('deve chamar o serviço de criação e retornar 201', async () => {
       const dto = { nome: 'João', email: 'a@a.com' } as any;
@@ -85,16 +76,11 @@ describe('CandidaturasController (Unitário)', () => {
         dto,
       );
       expect(result).toEqual(mockCandidatura);
-      // O status 201 é validado pelo @HttpCode no Controller
     });
   });
 
-  // --------------------------------------------------------
-  // --- Testes de Rotas Admin (GET/POST /admin/*) ---
-  // --------------------------------------------------------
   describe('Rotas Admin (Protegidas)', () => {
     it('GET /admin/candidaturas deve chamar o serviço e retornar 200', async () => {
-      // O mockApiKeyGuard já está configurado para retornar 'true'
       const result = await controller.listarTodas();
 
       expect(mockCandidaturasService.listarTodas).toHaveBeenCalled();
@@ -107,7 +93,7 @@ describe('CandidaturasController (Unitário)', () => {
 
       expect(mockCandidaturasService.aprovarCandidatura).toHaveBeenCalledWith(
         1,
-      ); // Verifica se o ID foi convertido para número
+      );
     });
 
     it('POST /admin/candidaturas/:id/recusar deve chamar o serviço e retornar o resultado da recusa', async () => {
@@ -118,8 +104,5 @@ describe('CandidaturasController (Unitário)', () => {
         1,
       );
     });
-
-    // Nota: O teste do 403 Forbidden é mais completo nos testes E2E,
-    // mas testar o canActivate do Guard isoladamente é suficiente para o Unit Test.
   });
 });

@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Membro } from '../entidades/membro.entidade';
 
-// Interface para entrada de dados
-interface CriarMembroData {
+export interface CriarMembroData {
   nome: string;
   email: string;
   empresa: string;
@@ -21,7 +20,6 @@ export class MembrosService {
   ) {}
 
   async criarMembro(dados: CriarMembroData): Promise<Membro> {
-    // Note: 'ativo' é true por padrão na entidade
     const novoMembro = this.repositorioMembro.create(dados);
     return this.repositorioMembro.save(novoMembro);
   }

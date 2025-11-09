@@ -10,16 +10,12 @@ import { MembrosModule } from 'src/membros/membros.module';
 @Module({
   imports: [
     MembrosModule,
-    // 2. Use TypeOrmModule.forFeature() para registrar as entidades
-    TypeOrmModule.forFeature([
-      Convite,
-      Candidatura, // Para que o serviço possa atualizar o status
-      Membro, // Se o ConvitesService for responsável por criar o membro no cadastro final
-    ]),
+
+    TypeOrmModule.forFeature([Convite, Candidatura, Membro]),
   ],
   controllers: [ConvitesController],
   providers: [ConvitesService],
-  // 3. Opcional: exportar o serviço para uso em outros módulos
+
   exports: [ConvitesService],
 })
 export class ConvitesModule {}

@@ -1,38 +1,40 @@
-// api/src/entidades/candidatura.entidade.ts
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+} from 'typeorm';
 
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
-
-export enum StatusCandidatura { // Renomeando o Enum
+export enum StatusCandidatura {
   PENDING = 'PENDENTE',
   APPROVED = 'APROVADA',
   REJECTED = 'RECUSADA',
 }
 
-@Entity('applications') // Mantemos o nome da tabela em inglês ('applications') para padronização de BD.
-export class Candidatura { // <-- CLASSE RENOMEADA PARA PORTUGUÊS
-  
+@Entity('applications')
+export class Candidatura {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ length: 100 })
-  nome: string; 
-  
+  nome: string;
+
   @Column({ unique: true })
   email: string;
 
   @Column({ length: 150 })
   empresa: string;
-  
+
   @Column({ type: 'text' })
   motivoParticipacao: string;
-  
+
   @Column({
     type: 'enum',
-    enum: StatusCandidatura, // Usando o novo Enum
+    enum: StatusCandidatura,
     default: StatusCandidatura.PENDING,
   })
-  status: StatusCandidatura; // Usando o novo Enum
-  
+  status: StatusCandidatura;
+
   @CreateDateColumn({ type: 'timestamp' })
   dataCriacao: Date;
 }

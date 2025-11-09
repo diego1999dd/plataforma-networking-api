@@ -4,10 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Membro } from '../entidades/membro.entidade';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Membro]), // Registra o repositório
-  ],
+  imports: [TypeOrmModule.forFeature([Membro])],
   providers: [MembrosService],
-  exports: [MembrosService], // Exporta o serviço para ser injetado no ConvitesModule
+  exports: [MembrosService],
 })
 export class MembrosModule {}

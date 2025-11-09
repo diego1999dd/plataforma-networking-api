@@ -1,5 +1,3 @@
-// api/src/convites/convites.service.spec.ts
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConvitesService } from './convites.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -13,21 +11,17 @@ import { Membro } from '../entidades/membro.entidade';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { CompletarCadastroDto } from '../candidaturas/dto/completar-cadastro.dto';
 
-// Mockamos a biblioteca 'uuid' para que 'uuidv4()' retorne sempre o mesmo valor previsível
 jest.mock('uuid', () => ({
   v4: () => 'token-uuid-mock-123456',
 }));
 
-// --- MOCKS ---
 const mockRepositorioConvite = {
   create: jest.fn((data) => data),
   save: jest.fn((data) => Promise.resolve(data)),
   findOne: jest.fn(),
 };
 
-const mockRepositorioCandidatura = {
-  // Simplesmente precisa existir para ser injetado, mas não será chamado diretamente aqui
-};
+const mockRepositorioCandidatura = {};
 
 const mockMembrosService = {
   criarMembro: jest.fn(),
@@ -68,9 +62,6 @@ describe('ConvitesService', () => {
     expect(service).toBeDefined();
   });
 
-  // --------------------------------------------------------
-  // --- 1. Testes de Geração de Convite ---
-  // --------------------------------------------------------
   describe('gerarConvite', () => {
     it('deve gerar um UUID e salvar um novo convite', async () => {
       const candidaturaId = 1;
@@ -78,7 +69,7 @@ describe('ConvitesService', () => {
 
       expect(repositorioConvite.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          token: 'token-uuid-mock-123456', // Verifica o token mockado
+          token: 'token-uuid-mock-123456',
           candidaturaId: candidaturaId,
           isUsado: false,
         }),
@@ -88,9 +79,6 @@ describe('ConvitesService', () => {
     });
   });
 
-  // --------------------------------------------------------
-  // --- 2. Testes de Validação de Convite ---
-  // --------------------------------------------------------
   describe('validarConvite', () => {
     const tokenValido = 'token-valido';
     const conviteAprovado: Convite = {
@@ -149,9 +137,6 @@ describe('ConvitesService', () => {
     });
   });
 
-  // --------------------------------------------------------
-  // --- 3. Testes de Conclusão de Cadastro ---
-  // --------------------------------------------------------
   describe('completarCadastro', () => {
     const token = 'token-valido';
     const dto: CompletarCadastroDto = {
@@ -185,15 +170,12 @@ describe('ConvitesService', () => {
       dataAdesao: new Date(),
     };
 
-    // Mockar validarConvite para simplificar (assumindo que funciona)
     it('deve criar o membro, marcar o convite como usado e retornar o Membro', async () => {
-      // Configura o mock para retorno
       repositorioConvite.findOne.mockResolvedValue(conviteValido);
       membrosService.criarMembro.mockResolvedValue(membroCriado);
 
       const result = await service.completarCadastro(token, dto);
 
-      // 1. Verifica se o MembrosService foi chamado com os dados combinados
       expect(membrosService.criarMembro).toHaveBeenCalledWith(
         expect.objectContaining({
           nome: 'Candidato Teste',
@@ -203,12 +185,9 @@ describe('ConvitesService', () => {
         }),
       );
 
-      // 2. Verifica se o convite foi marcado como usado e salvo
       const conviteSalvo = repositorioConvite.save.mock.calls[0][0];
       expect(conviteSalvo.isUsado).toBe(true);
 
-
-      // 3. Verifica o retorno
       expect(result).toEqual(membroCriado);
     });
   });

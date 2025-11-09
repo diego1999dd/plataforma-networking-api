@@ -24,25 +24,21 @@ export class ConvitesService {
     @InjectRepository(Convite)
     private repositorioConvite: Repository<Convite>,
     @InjectRepository(Candidatura)
-    private repositorioCandidatura: Repository<Candidatura>, // Necessário para aprovação/recusa
-    private membrosService: MembrosService, // Injeção do MembrosService
+    private repositorioCandidatura: Repository<Candidatura>,
+    private membrosService: MembrosService,
   ) {}
 
   async gerarConvite(candidaturaId: number): Promise<Convite> {
-    // 1. Gera o token único
     const tokenUnico = uuid.v4();
 
-    // 2. Cria o objeto Convite
     const novoConvite = this.repositorioConvite.create({
       token: tokenUnico,
       candidaturaId: candidaturaId,
       isUsado: false,
     });
 
-    // 3. Salva no banco de dados
     const conviteSalvo = await this.repositorioConvite.save(novoConvite);
 
-    // 4. Simula o envio do link por e-mail (console.log é suficiente para o teste)
     this.logger.log(
       `[E-MAIL] Link de Cadastro Gerado para o ID ${candidaturaId}: http://localhost:3000/cadastro/${tokenUnico}`,
     );
@@ -52,7 +48,7 @@ export class ConvitesService {
   async validarConvite(token: string): Promise<Convite> {
     const convite = await this.repositorioConvite.findOne({
       where: { token },
-      relations: ['candidatura'], // Carrega os dados da Candidatura para uso posterior
+      relations: ['candidatura'],
     });
 
     if (!convite) {
@@ -70,16 +66,13 @@ export class ConvitesService {
     return convite;
   }
 
-  // 2. Conclusão do Cadastro
   async completarCadastro(
     token: string,
     dadosFinais: CompletarCadastroDto,
   ): Promise<Membro> {
-    // Valida e recupera os dados
     const convite = await this.validarConvite(token);
     const candidatura = convite.candidatura;
 
-    // Combina dados da Candidatura original + dados do formulário final
     const dadosMembro = {
       nome: candidatura.nome,
       email: candidatura.email,
@@ -89,10 +82,8 @@ export class ConvitesService {
       bio: dadosFinais.bio,
     };
 
-    // Cria o Membro no banco de dados
     const novoMembro = await this.membrosService.criarMembro(dadosMembro);
 
-    // Marca o convite como usado para evitar reuso
     convite.isUsado = true;
     await this.repositorioConvite.save(convite);
 

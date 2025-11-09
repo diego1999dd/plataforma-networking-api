@@ -1,12 +1,9 @@
-// api/src/membros/membros.service.spec.ts
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { MembrosService } from './membros.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Membro } from '../entidades/membro.entidade';
-import { CriarMembroData } from '../membros/membros.service'; // Importa a interface do Service
+import { CriarMembroData } from '../membros/membros.service';
 
-// --- MOCKS ---
 const mockRepositorioMembro = {
   create: jest.fn(),
   save: jest.fn(),
@@ -36,9 +33,6 @@ describe('MembrosService (Unitário)', () => {
     expect(service).toBeDefined();
   });
 
-  // --------------------------------------------------------
-  // --- Testes de Criação de Membro ---
-  // --------------------------------------------------------
   describe('criarMembro', () => {
     const dadosMembro: CriarMembroData = {
       nome: 'Membro Teste',
@@ -61,15 +55,12 @@ describe('MembrosService (Unitário)', () => {
 
       const result = await service.criarMembro(dadosMembro);
 
-      // Verifica se o repositório.create foi chamado
       expect(repositorio.create).toHaveBeenCalledWith(dadosMembro);
 
-      // Verifica se o repositório.save foi chamado
       expect(repositorio.save).toHaveBeenCalledWith(membroCriado);
 
-      // Verifica o retorno
       expect(result).toEqual(membroCriado);
-      expect(result.ativo).toBe(true); // Confirma a regra de negócio (ativo=true por padrão)
+      expect(result.ativo).toBe(true);
     });
   });
 });

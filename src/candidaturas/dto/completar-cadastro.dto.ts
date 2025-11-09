@@ -4,7 +4,7 @@ export class CompletarCadastroDto {
   @IsNotEmpty({ message: 'O campo função é obrigatório.' })
   @IsString({ message: 'A função deve ser um texto.' })
   @MaxLength(100)
-  funcao: string; // Ex: Desenvolvedor Fullstack
+  funcao: string;
 
   @IsNotEmpty({ message: 'O campo telefone é obrigatório.' })
   @IsString({ message: 'O telefone deve ser um texto.' })
