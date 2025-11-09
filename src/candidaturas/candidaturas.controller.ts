@@ -35,6 +35,7 @@ export class CandidaturasController {
     return this.candidaturasService.listarTodas();
   }
 
+  @UseGuards(ApiKeyGuard)
   @Post('admin/candidaturas/:id/aprovar')
   async aprovarCandidatura(@Param('id') id: string) {
     return this.candidaturasService.aprovarCandidatura(Number(id));
