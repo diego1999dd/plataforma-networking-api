@@ -13,7 +13,7 @@ import {
 import { CriarCandidaturaDto } from './dto/criar-candidatura.dto';
 import { ConvitesService } from '../convites/convites.service';
 import { Convite } from '../entidades/convite.entidade';
-
+// 2. Importações necessárias para exceções e logging
 @Injectable()
 export class CandidaturasService {
   private readonly logger = new Logger(CandidaturasService.name);
